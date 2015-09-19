@@ -9,10 +9,11 @@
 
 
 #define RANDOMNESS 5
-#define TRIANGLE_SIZE 40
-#define FRAME_RATE 30
-#define SCREEN_SIZE "test" // "test" for small
-#define HUE_MAX 360
+#define TRIANGLE_SIZE_MIN 20
+#define TRIANGLE_SIZE_MAX 200
+#define TARGET_FRAME_RATE 30
+#define SCREEN_SIZE "mac" // "test" for small
+#define TARGET_FRAME_TOLERANCE 3
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -27,13 +28,14 @@ void ofApp::setup(){
     }
     colorFx = true;
     hueAngle = 90;
+    triangleSize = 40;
     
     ofSetWindowShape(w, h);
     
 
     //ofSetVerticalSync(true);
-    ofSetFrameRate(FRAME_RATE);
-    cam.setDesiredFrameRate(FRAME_RATE);
+    ofSetFrameRate(TARGET_FRAME_RATE);
+    cam.setDesiredFrameRate(TARGET_FRAME_RATE);
     cam.initGrabber(w, h);
     
     grayImage.allocate(w, h);
@@ -69,11 +71,7 @@ void ofApp::update(){
         
         ofPixels edgeData = edgeImage.getPixels();
         
-        // the bigger up , the bigger triangle size (lower value is more cpu intense)
-        int up = TRIANGLE_SIZE;
-        
-        
-        for (int i=0; i<w*h; i+=(up+ofRandom(0, RANDOMNESS)) ) {
+        for (int i=0; i<w*h; i+=(triangleSize+ofRandom(0, RANDOMNESS)) ) {
             if (edgeData[i] == 0){ continue;}
             else{
                 // add edge point
@@ -138,7 +136,15 @@ void ofApp::draw(){
     //    ofRect( finder.blobs[i].boundingRect );
     //}
     
-    ofDrawBitmapString(ofToString(ofGetFrameRate())+" fps", 10, 15);
+    int frameRate = ofGetFrameRate();
+    
+    if ( frameRate < TARGET_FRAME_RATE-TARGET_FRAME_TOLERANCE) {
+        ofSetColor(204,0,0);
+    }
+    ofDrawBitmapString("fps:           " + ofToString((int)ofGetFrameRate()), 10, 15);
+    ofSetColor(255);
+    ofDrawBitmapString("hue angle:     " + ofToString(hueAngle), 10, 30);
+    ofDrawBitmapString("triangle size: " + ofToString(triangleSize), 10, 45);
 }
 
 //--------------------------------------------------------------
@@ -165,6 +171,7 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
+    triangleSize = (int) TRIANGLE_SIZE_MIN + ofClamp(TRIANGLE_SIZE_MAX/(float)w *x,0,TRIANGLE_SIZE_MAX-TRIANGLE_SIZE_MIN);
     hueAngle = (int)(360/(float)w * y);
 }
 

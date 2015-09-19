@@ -35,5 +35,6 @@ class ofApp : public ofBaseApp{
     bool fullScreen;
     bool colorFx;
     int  hueAngle;
+    int  triangleSize;
 		
 };
