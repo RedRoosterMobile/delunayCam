@@ -8,15 +8,18 @@
 // https://github.com/openframeworks/openFrameworks/pull/2992
 
 
-#define RANDOMNESS 5
-#define TRIANGLE_SIZE_MIN 20
-#define TRIANGLE_SIZE_MAX 200
-#define TARGET_FRAME_RATE 30
+// todo: some of 'em will go to a HUD
+#define RANDOMNESS 5 // to prevent straight lines every triangle size
+#define TRIANGLE_SIZE_MIN 20 // smaller is bad for speed
+#define TRIANGLE_SIZE_MAX 200 // bigger looks too abstract
+#define TARGET_FRAME_RATE 30 // seems legit
 #define SCREEN_SIZE "test" // "test" for small
 #define TARGET_FRAME_TOLERANCE 3
 #define LINE_HEIGHT 15
 #define FONT_SIZE 10
-#define SCREENSHOT_INTERVAL_S 2
+#define RANDOM_POINTS 400 // 800 OK with fps on 2,3 GHz Intel Core i7
+#define SCREENSHOT_INTERVAL_S 2 // screenshot interval in sec.
+//#define HAAR_HACK 1
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -40,7 +43,7 @@ void ofApp::setup(){
     takeScreenshots = false;
     
     ofSetWindowShape(w, h);
-    // this is beneficial fps somehow
+    // this is beneficial for fps somehow
     ofEnableAntiAliasing();
     
 
@@ -54,7 +57,7 @@ void ofApp::setup(){
     
     fullScreen = false;
     
-    //finder.setup("haarcascade_frontalface_alt.xml");
+    //finder.setup("haarcascade_frontalface_default.xml");
 }
 
 //--------------------------------------------------------------
@@ -72,6 +75,7 @@ void ofApp::update(){
         
         // get edges from grayImage
         cvCanny(grayImage.getCvImage(), edgeImage.getCvImage(), 20, 100);
+
         edgeImage.flagImageChanged();
         // find some edges
         edgeImage.dilate();
@@ -91,7 +95,7 @@ void ofApp::update(){
             }
         }
         // add additional random points
-        for (int i=0; i<400; i++) {
+        for (int i=0; i<RANDOM_POINTS; i++) {
             delaunay.addPoint(ofPoint(ofRandom(0, w),ofRandom(0, h)));
         }
         // add corner points
@@ -130,21 +134,25 @@ void ofApp::update(){
             
         }
     }
-    
     //ofVbo vbo = mesh.getVbo();
-
-
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofFill();
-    ofSetBackgroundColor(0, 0, 0);
+    // black
+    ofSetBackgroundColor(0);
     mesh.draw();
     //for(int i = 0; i < finder.blobs.size(); i++) {
     //    ofRect( finder.blobs[i].boundingRect );
     //}
+    timer();
+    drawMenu();
     
+}
+
+//-- timed stuff goes here
+void ofApp::timer() {
     if (takeScreenshots) {
         if (!isSleeping) {
             // do interrrut callback replacement
@@ -152,16 +160,19 @@ void ofApp::draw(){
             timeEnd = timeStart + SCREENSHOT_INTERVAL_S;
             isSleeping = true;
             ofLog() << "the photographer is..waking UP!";
-            ofImage myImage;
-            myImage.grabScreen(0,0,w,h);
-            myImage.save("partOfTheScreen"+ofToString(counter)+".png");
+            
+            screenShotImage.grabScreen(0,0,w,h);
+            screenShotImage.save("partOfTheScreen"+ofToString(counter)+".png");
             counter++;
         } else if (ofGetUnixTime() > timeEnd ) {
             isSleeping = false;
             ofLog() << "the photographer is..going to sleep..";
         }
     }
-    
+
+}
+// -- draw stuff
+void ofApp::drawMenu() {
     int frameRate = ofGetFrameRate();
     if ( frameRate < TARGET_FRAME_RATE-TARGET_FRAME_TOLERANCE) {
         ofSetColor(204,0,0);
@@ -171,6 +182,7 @@ void ofApp::draw(){
     ofDrawBitmapString("hue angle:     " + ofToString(hueAngle), FONT_SIZE, LINE_HEIGHT*2);
     ofDrawBitmapString("triangle size: " + ofToString(triangleSize), FONT_SIZE, LINE_HEIGHT*3);
 }
+
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){

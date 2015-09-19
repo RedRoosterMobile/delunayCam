@@ -22,11 +22,14 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+
+    void drawMenu();
+    void timer();
     
     ofVideoGrabber cam;
     ofxDelaunay delaunay;
     ofVboMesh mesh;
-    //ofxCvHaarFinder finder;
+    ofxCvHaarFinder finder;
     
     ofxCvColorImage colorImage;
     ofxCvGrayscaleImage grayImage, edgeImage;
@@ -37,9 +40,9 @@ class ofApp : public ofBaseApp{
     int  hueAngle;
     int  triangleSize;
     
-    
     bool isSleeping;
     bool takeScreenshots;
+    ofImage screenShotImage;
     unsigned int  timeStart;
     unsigned int  timeEnd;
     unsigned long counter;

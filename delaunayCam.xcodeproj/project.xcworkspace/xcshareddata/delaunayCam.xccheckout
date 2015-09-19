@@ -22,7 +22,7 @@
 		<key>866423136414C193601C7FAD7522131AA4ABC623</key>
 		<string>../..</string>
 		<key>B98E3CFEC6501A75CC8123C65E3620511AA66D21</key>
-		<string>../../../../../../../c++/of_v0.8.4_osx_release/addons/ofxDelaunay</string>
+		<string>../../../c++/of_v0.8.4_osx_release/addons/ofxDelaunay</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>github.com:RedRoosterMobile/delunayCam.git</string>
