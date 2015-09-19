@@ -16,3 +16,4 @@ openframeworks 9.0RC1
 - mouse x: modify triangle size
 - 'c': switch color modification
 - 'f': switch fullscreen
+- 's': switch taking screenshots periodically
