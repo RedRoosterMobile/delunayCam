@@ -36,5 +36,12 @@ class ofApp : public ofBaseApp{
     bool colorFx;
     int  hueAngle;
     int  triangleSize;
+    
+    
+    bool isSleeping;
+    bool takeScreenshots;
+    unsigned int  timeStart;
+    unsigned int  timeEnd;
+    unsigned long counter;
 		
 };

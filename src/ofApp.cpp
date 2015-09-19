@@ -12,8 +12,11 @@
 #define TRIANGLE_SIZE_MIN 20
 #define TRIANGLE_SIZE_MAX 200
 #define TARGET_FRAME_RATE 30
-#define SCREEN_SIZE "mac" // "test" for small
+#define SCREEN_SIZE "test" // "test" for small
 #define TARGET_FRAME_TOLERANCE 3
+#define LINE_HEIGHT 15
+#define FONT_SIZE 10
+#define SCREENSHOT_INTERVAL_S 2
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -26,11 +29,19 @@ void ofApp::setup(){
         w=1440;
         h=900;
     }
+    
     colorFx = true;
     hueAngle = 90;
     triangleSize = 40;
     
+    // photo stuff
+    counter = 0;
+    isSleeping = true;
+    takeScreenshots = false;
+    
     ofSetWindowShape(w, h);
+    // this is beneficial fps somehow
+    ofEnableAntiAliasing();
     
 
     //ofSetVerticalSync(true);
@@ -109,8 +120,6 @@ void ofApp::update(){
                 //color.setSaturation(mouseY);
             }
             
-            // todo: change saturationhere?
-            
             mesh.addVertex(v1);
             mesh.addVertex(v2);
             mesh.addVertex(v3);
@@ -130,21 +139,37 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofFill();
-    //ofSetColor(123,123,123);
+    ofSetBackgroundColor(0, 0, 0);
     mesh.draw();
     //for(int i = 0; i < finder.blobs.size(); i++) {
     //    ofRect( finder.blobs[i].boundingRect );
     //}
     
-    int frameRate = ofGetFrameRate();
+    if (takeScreenshots) {
+        if (!isSleeping) {
+            // do interrrut callback replacement
+            timeStart = ofGetUnixTime();
+            timeEnd = timeStart + SCREENSHOT_INTERVAL_S;
+            isSleeping = true;
+            ofLog() << "the photographer is..waking UP!";
+            ofImage myImage;
+            myImage.grabScreen(0,0,w,h);
+            myImage.save("partOfTheScreen"+ofToString(counter)+".png");
+            counter++;
+        } else if (ofGetUnixTime() > timeEnd ) {
+            isSleeping = false;
+            ofLog() << "the photographer is..going to sleep..";
+        }
+    }
     
+    int frameRate = ofGetFrameRate();
     if ( frameRate < TARGET_FRAME_RATE-TARGET_FRAME_TOLERANCE) {
         ofSetColor(204,0,0);
     }
-    ofDrawBitmapString("fps:           " + ofToString((int)ofGetFrameRate()), 10, 15);
+    ofDrawBitmapString("fps:           " + ofToString((int)ofGetFrameRate()), FONT_SIZE, LINE_HEIGHT);
     ofSetColor(255);
-    ofDrawBitmapString("hue angle:     " + ofToString(hueAngle), 10, 30);
-    ofDrawBitmapString("triangle size: " + ofToString(triangleSize), 10, 45);
+    ofDrawBitmapString("hue angle:     " + ofToString(hueAngle), FONT_SIZE, LINE_HEIGHT*2);
+    ofDrawBitmapString("triangle size: " + ofToString(triangleSize), FONT_SIZE, LINE_HEIGHT*3);
 }
 
 //--------------------------------------------------------------
@@ -156,6 +181,9 @@ void ofApp::keyPressed(int key){
             break;
         case 'c':
             colorFx= !colorFx;
+            break;
+        case 's':
+            takeScreenshots= !takeScreenshots;
             break;
         case 'e':
             cam.videoSettings();
