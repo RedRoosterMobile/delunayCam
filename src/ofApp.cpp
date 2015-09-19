@@ -12,6 +12,7 @@
 #define TRIANGLE_SIZE 40
 #define FRAME_RATE 30
 #define SCREEN_SIZE "test" // "test" for small
+#define HUE_MAX 360
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -20,10 +21,12 @@ void ofApp::setup(){
         w=640;
         h=480;
     } else {
+        // mac 15" low res
         w=1440;
         h=900;
     }
-    
+    colorFx = true;
+    hueAngle = 90;
     
     ofSetWindowShape(w, h);
     
@@ -103,10 +106,10 @@ void ofApp::update(){
             ofVec2f gp = (v1+v2+v3)/3.0;
             
             ofColor color = pixels.getColor((int)gp.x, (int)gp.y);
-            //int hueAngle = (int)(360/(float)w * mouseX) - 180;
-            int hueAngle = (int)(360/(float)w * mouseX);
-            //color.setHueAngle(hueAngle);
-            //color.setSaturation(mouseY);
+            if (colorFx) {
+                color.setHueAngle(hueAngle);
+                //color.setSaturation(mouseY);
+            }
             
             // todo: change saturationhere?
             
@@ -145,6 +148,9 @@ void ofApp::keyPressed(int key){
             ofSetFullscreen(fullScreen);
             fullScreen = !fullScreen;
             break;
+        case 'c':
+            colorFx= !colorFx;
+            break;
         case 'e':
             cam.videoSettings();
             break;
@@ -159,8 +165,7 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-    mouseX = x;
-    mouxeY = y;
+    hueAngle = (int)(360/(float)w * y);
 }
 
 //--------------------------------------------------------------

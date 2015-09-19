@@ -31,10 +31,9 @@ class ofApp : public ofBaseApp{
     ofxCvColorImage colorImage;
     ofxCvGrayscaleImage grayImage, edgeImage;
     
-    int w,h;
+    int  w,h;
     bool fullScreen;
-    
-    int mouseX;
-    int mouxeY;
+    bool colorFx;
+    int  hueAngle;
 		
 };
