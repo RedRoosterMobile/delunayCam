@@ -1,20 +1,44 @@
 #include "ofApp.h"
 // https://www.honeycomb-lab.co.jp/blog/tech/?p=1038
+// http://www.myu.ac.jp/~xkozima/lab/ofTutorial5.html
+// https://raw.githubusercontent.com/Itseez/opencv/master/data/haarcascades/haarcascade_frontalface_default.xml
+
+
+// emscripten video grabber SUPPORTED!
+// https://github.com/openframeworks/openFrameworks/pull/2992
+
+
+#define RANDOMNESS 5
+#define TRIANGLE_SIZE 40
+#define FRAME_RATE 30
+#define SCREEN_SIZE "test" // "test" for small
+
 //--------------------------------------------------------------
 void ofApp::setup(){
-    //w=1440;
-    //h=900;
-    w=640;
-    h=480;
+    
+    if (SCREEN_SIZE=="test") {
+        w=640;
+        h=480;
+    } else {
+        w=1440;
+        h=900;
+    }
+    
+    
     ofSetWindowShape(w, h);
     
-    cam.setDesiredFrameRate(30);
+
+    //ofSetVerticalSync(true);
+    ofSetFrameRate(FRAME_RATE);
+    cam.setDesiredFrameRate(FRAME_RATE);
     cam.initGrabber(w, h);
     
     grayImage.allocate(w, h);
     edgeImage.allocate(w, h);
     
     fullScreen = false;
+    
+    //finder.setup("haarcascade_frontalface_alt.xml");
 }
 
 //--------------------------------------------------------------
@@ -33,13 +57,20 @@ void ofApp::update(){
         // get edges from grayImage
         cvCanny(grayImage.getCvImage(), edgeImage.getCvImage(), 20, 100);
         edgeImage.flagImageChanged();
-
         // find some edges
         edgeImage.dilate();
+        
+        // alternative
+        //finder.findHaarObjects(cam.getPixels());
+        
+        
         ofPixels edgeData = edgeImage.getPixels();
         
-        int up = 80;
-        for (int i=0; i<w*h; i+=up) {
+        // the bigger up , the bigger triangle size (lower value is more cpu intense)
+        int up = TRIANGLE_SIZE;
+        
+        
+        for (int i=0; i<w*h; i+=(up+ofRandom(0, RANDOMNESS)) ) {
             if (edgeData[i] == 0){ continue;}
             else{
                 // add edge point
@@ -73,9 +104,9 @@ void ofApp::update(){
             
             ofColor color = pixels.getColor((int)gp.x, (int)gp.y);
             //int hueAngle = (int)(360/(float)w * mouseX) - 180;
-            int hueAngle = (int)(360/(float)w * mouseX) - 180;
-            color.setHueAngle(hueAngle);
-            color.setSaturation(mouseY);
+            int hueAngle = (int)(360/(float)w * mouseX);
+            //color.setHueAngle(hueAngle);
+            //color.setSaturation(mouseY);
             
             // todo: change saturationhere?
             
@@ -95,57 +126,22 @@ void ofApp::update(){
 
 }
 
-void changeHue() {
-    // START CALCULATE HUE (todo: stuff into method and refresh pointer kung fu :-)
-    /*
-    double cosv,sinv;
-    cosv = cos(angle * PI / 180);
-    sinv = sin(angle * PI / 180);
-    double matrix [9] = {
-        1, 0, 0,   // Reds
-        0, 1, 0,   // Greens
-        0, 0, 1    // Blues
-    };
-    
-    
-    // taken from webkit:
-    // /Source/WebCore/platform/graphics/texmap/TextureMapperShaderProgram.cpp
-    matrix[0] = 0.213 + cosv * 0.787 - sinv * 0.213;
-    matrix[1] = 0.715 - cosv * 0.715 - sinv * 0.715;
-    matrix[2] = 0.072 - cosv * 0.072 + sinv * 0.928;
-    
-    matrix[3] = 0.213 - cosv * 0.213 + sinv * 0.143;
-    matrix[4] = 0.715 + cosv * 0.285 + sinv * 0.140;
-    matrix[5] = 0.072 - cosv * 0.072 - sinv * 0.283;
-    
-    matrix[6] = 0.213 - cosv * 0.213 - sinv * 0.787;
-    matrix[7] = 0.715 - cosv * 0.715 + sinv * 0.715;
-    matrix[8] = 0.072 + cosv * 0.928 + sinv * 0.072;
-    
-    double r,g,b;
-    r = (double)color.rgbRed;
-    g = (double)color.rgbGreen;
-    b = (double)color.rgbBlue;
-    
-    color.rgbRed = clamp(matrix[0] * r + matrix[1] * g + matrix[2] * b);
-    color.rgbGreen = clamp(matrix[3] * r + matrix[4] * g + matrix[5] * b);
-    color.rgbBlue = clamp(matrix[6] * r + matrix[7] * g + matrix[8] * b);
-    */
-    // END CALCULATE HUE
-}
-
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofFill();
     //ofSetColor(123,123,123);
     mesh.draw();
+    //for(int i = 0; i < finder.blobs.size(); i++) {
+    //    ofRect( finder.blobs[i].boundingRect );
+    //}
+    
+    ofDrawBitmapString(ofToString(ofGetFrameRate())+" fps", 10, 15);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     switch(key){
         case 'f':
-            
             ofSetFullscreen(fullScreen);
             fullScreen = !fullScreen;
             break;
@@ -163,9 +159,7 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-    
     mouseX = x;
-    
     mouxeY = y;
 }
 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>8F8BD1DE-611C-4FB8-A44C-092CEEB7CD76</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>866423136414C193601C7FAD7522131AA4ABC623</key>
+		<string>github.com:RedRoosterMobile/delunayCam.git</string>
+		<key>B98E3CFEC6501A75CC8123C65E3620511AA66D21</key>
+		<string>https://github.com/obviousjim/ofxDelaunay</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>delaunayCam.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>866423136414C193601C7FAD7522131AA4ABC623</key>
+		<string>../..</string>
+		<key>B98E3CFEC6501A75CC8123C65E3620511AA66D21</key>
+		<string>../../../../../../../c++/of_v0.8.4_osx_release/addons/ofxDelaunay</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:RedRoosterMobile/delunayCam.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>866423136414C193601C7FAD7522131AA4ABC623</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>866423136414C193601C7FAD7522131AA4ABC623</string>
+			<key>IDESourceControlWCCName</key>
+			<string>delaunayCam</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>B98E3CFEC6501A75CC8123C65E3620511AA66D21</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxDelaunay</string>
+		</dict>
+	</array>
+</dict>
+</plist>

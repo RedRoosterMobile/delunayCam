@@ -26,6 +26,7 @@ class ofApp : public ofBaseApp{
     ofVideoGrabber cam;
     ofxDelaunay delaunay;
     ofVboMesh mesh;
+    //ofxCvHaarFinder finder;
     
     ofxCvColorImage colorImage;
     ofxCvGrayscaleImage grayImage, edgeImage;
